@@ -522,7 +522,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
         }
         balance(){
             let line = new Line(this.nodes[0].center.x,this.nodes[0].center.y,this.nodes[1].center.x,this.nodes[1].center.y, "white", this.nodes[1].center.radius)
-            line.draw()
+            // line.draw()
             this.rotator = new Circle((this.nodes[0].center.x+this.nodes[1].center.x)*.5,(this.nodes[0].center.y+this.nodes[1].center.y)*.5, 0, "transparent")
             this.angleRadians = Math.atan2(this.nodes[0].center.y-this.nodes[1].center.y,this.nodes[0].center.x-this.nodes[1].center.x)
             
@@ -530,6 +530,8 @@ window.addEventListener('DOMContentLoaded', (event) => {
             this.nodes[0].center.y = this.rotator.y+(Math.sin(this.angleRadians)*(this.dis*.5))
             this.nodes[1].center.x = this.rotator.x+(Math.cos(this.angleRadians)*(-this.dis*.5))
             this.nodes[1].center.y = this.rotator.y+(Math.sin(this.angleRadians)*(-this.dis*.5))
+             line = new Line(this.nodes[0].center.x,this.nodes[0].center.y,this.nodes[1].center.x,this.nodes[1].center.y, "white", this.nodes[1].center.radius)
+            line.draw()
         }
     }
 
