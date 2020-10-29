@@ -702,6 +702,9 @@ window.addEventListener('DOMContentLoaded', (event) => {
                     }
                     // this.center.draw()
         
+                    for(let s = 0;s<this.segments.length;s++){
+                        this.nodes[s].segments[s].balance()
+                    }
                     }
 
                 for(let s = 0;s<this.nodes.length;s++){
