@@ -1,7 +1,7 @@
 
 window.addEventListener('DOMContentLoaded', (event) => {
 
-    let gen = 15//300
+    let gen = 50//300
 
 
     let keysPressed = {}
@@ -18,59 +18,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
     let tutorial_canvas_context = tutorial_canvas.getContext('2d');
 
     tutorial_canvas.style.background = "#000000"
-
-    class Triangle {
-        constructor(x, y, color, length) {
-            this.x = x
-            this.y = y
-            this.color = color
-            this.length = length
-            this.x1 = this.x + this.length
-            this.x2 = this.x - this.length
-            this.tip = this.y - this.length * 2
-            this.accept1 = (this.y - this.tip) / (this.x1 - this.x)
-            this.accept2 = (this.y - this.tip) / (this.x2 - this.x)
-
-        }
-
-        draw() {
-            tutorial_canvas_context.strokeStyle = this.color
-            tutorial_canvas_context.stokeWidth = 3
-            tutorial_canvas_context.moveTo(this.x, this.y)
-            tutorial_canvas_context.lineTo(this.x1, this.y)
-            tutorial_canvas_context.lineTo(this.x, this.tip)
-            tutorial_canvas_context.lineTo(this.x2, this.y)
-            tutorial_canvas_context.lineTo(this.x, this.y)
-            tutorial_canvas_context.stroke()
-        }
-
-        isPointInside(point) {
-            if (point.x <= this.x1) {
-                if (point.y >= this.tip) {
-                    if (point.y <= this.y) {
-                        if (point.x >= this.x2) {
-                            this.accept1 = (this.y - this.tip) / (this.x1 - this.x)
-                            this.accept2 = (this.y - this.tip) / (this.x2 - this.x)
-                            this.basey = point.y - this.tip
-                            this.basex = point.x - this.x
-                            if (this.basex == 0) {
-                                return true
-                            }
-                            this.slope = this.basey / this.basex
-                            if (this.slope >= this.accept1) {
-                                return true
-                            } else if (this.slope <= this.accept2) {
-                                return true
-                            }
-                        }
-                    }
-                }
-            }
-            return false
-        }
-    }
-
-
     class Rectangle {
         constructor(x, y, height, width, color) {
             this.x = x
@@ -173,7 +120,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
         }
     }
 
-    class Observer {
+    class Observer {  // to give them eyes later
         constructor() {
             this.body = new Circle(500, 500, 5, "white")
             this.ray = []
@@ -247,13 +194,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
         }
     }
 
-    // class Bone{
-    //     constructor(){
-    //         this.body
-    //     }
-
-    // }
-
     class Muscle {
         constructor(joint, endJoint, animal) {
             this.animal = animal
@@ -266,9 +206,8 @@ window.addEventListener('DOMContentLoaded', (event) => {
             this.state = 1
             this.min = (this.limbs[0].dis + this.limbs[1].dis) * .2
             this.max = (this.limbs[0].dis + this.limbs[1].dis) * .49
-            ////console.log(this.max)
             this.counter = 0
-            this.speed = (Math.random() * .05)
+            this.speed = .1
         }
         draw() {
             // this.balance()
@@ -451,7 +390,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
                                 // }
 
                             }
-                            // //////console.log(mediholder)
+                            // ////////console.log(mediholder)
                             // this.limbs[1].end = new Circle(this.limbs[1].median.x + (Math.cos(this.limbs[1].angle) * this.limbs[1].dis), this.limbs[1].median.y + (Math.sin(this.limbs[1].angle) * this.limbs[1].dis), this.limbs[1].median.radius, this.limbs[1].holdcenter.color)
 
                         } else {
@@ -530,7 +469,11 @@ window.addEventListener('DOMContentLoaded', (event) => {
             this.nodes[0].center.y = this.rotator.y+(Math.sin(this.angleRadians)*(this.dis*.5))
             this.nodes[1].center.x = this.rotator.x+(Math.cos(this.angleRadians)*(-this.dis*.5))
             this.nodes[1].center.y = this.rotator.y+(Math.sin(this.angleRadians)*(-this.dis*.5))
-             line = new Line(this.nodes[0].center.x,this.nodes[0].center.y,this.nodes[1].center.x,this.nodes[1].center.y, "white", this.nodes[1].center.radius)
+            //  line = new Line(this.nodes[0].center.x,this.nodes[0].center.y,this.nodes[1].center.x,this.nodes[1].center.y, "white", this.nodes[1].center.radius)
+            // line.draw()
+        }
+        draw(){
+           let  line = new Line(this.nodes[0].center.x,this.nodes[0].center.y,this.nodes[1].center.x,this.nodes[1].center.y, "white", this.nodes[1].center.radius)
             line.draw()
         }
     }
@@ -547,7 +490,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
             this.nodes = []
             this.layer = layer
             this.nodes.push(this)
-            // //////console.log(layer)
             if(this.layer < 1){
                 let animal = new Animal(x-40,y,layer+1)
                 animal.r = this.r
@@ -557,8 +499,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
 
                 this.nodes.push(animal)
-                // animals.push(animal)
-                //////console.log("hello")
 
             this.segments = []
             if(this.nodes.length == 2){
@@ -566,6 +506,11 @@ window.addEventListener('DOMContentLoaded', (event) => {
             }
 
             }
+
+
+            // commented stuff here is alternate body plans
+
+
             // this.nodes = []
             // if(bind == true){
             // let angle = (Math.PI * 2) / 6
@@ -667,9 +612,8 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 }
 
             }
-            // //////console.log(this)
         }
-        draw() {
+        balance() {
             this.counter++
             this.counter %= this.cyclemax
 
@@ -695,11 +639,11 @@ window.addEventListener('DOMContentLoaded', (event) => {
                             if (this.nodes[s].cycles[k][0] == t) {
                                 if (this.nodes[s].cycles[k][2] == this.counter) {
                                     this.nodes[s].joints[t].rooted = this.nodes[s].cycles[k][1]
-                                    // //console.log(this.nodes[s].layer)
+                                    // ////console.log(this.nodes[s].layer)
                                 }
                             }
                         }
-                        //console.log(this.nodes[s].joints[t], this.nodes[s])
+                        ////console.log(this.nodes[s].joints[t], this.nodes[s])
                         this.nodes[s].joints[t].move()
                     }
                     // this.center.draw()
@@ -709,16 +653,27 @@ window.addEventListener('DOMContentLoaded', (event) => {
                     }
                     }
 
-                for(let s = 0;s<this.nodes.length;s++){
-                    for (let t = 0; t < this.nodes[s].joints.length; t++) {
-                        this.nodes[s].joints[t].draw()
-                    }
-                    for (let t = 0; t < this.nodes[s].muscles.length; t++) {
-                        this.nodes[s].muscles[t].draw()
-                    }
-                }
-        
+            
             }
+
+        }
+        draw(){
+            for(let s = 0;s<this.nodes.length;s++){
+
+                for(let s = 0;s<this.segments.length;s++){
+                    this.nodes[s].segments[s].draw()
+                }
+            }
+
+            for(let s = 0;s<this.nodes.length;s++){
+                for (let t = 0; t < this.nodes[s].joints.length; t++) {
+                    this.nodes[s].joints[t].draw()
+                }
+                for (let t = 0; t < this.nodes[s].muscles.length; t++) {
+                    this.nodes[s].muscles[t].draw()
+                }
+            }
+    
         }
         mutate() {
             this.center.color = this.color
@@ -788,7 +743,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
     let animals = []
 
-    let chopper = 60
+    let chopper = 20
     for (let t = 0; t < chopper; t++) {
         let mule = new Animal(150, 350)
         animals.push(mule)
@@ -800,40 +755,50 @@ window.addEventListener('DOMContentLoaded', (event) => {
     let indexcut = 0
     let counter = 0
 
+    let fitnessline = new Rectangle(0,0,700,1,"orange")
+
 
 
     window.setInterval(function () {
         tutorial_canvas_context.clearRect(0, 0, tutorial_canvas.width, tutorial_canvas.height)
         for (let t = 0; t < animals.length; t++) {
+            animals[t].balance()
+        }
+        for (let t = 0; t < animals.length; t++) {
             animals[t].draw()
         }
-        // for (let t = 0; t < animals.length; t++) {
-        //     animals[t].center.draw()
-        // }
         // fitnessdot.draw()
+        fitnessline.draw()
 
 
         counter++
         if (counter >= gen) {
-            gen++
-            fitnesscutoff = 0
+            // gen+=1000
+            fitnesscutoff = fitnessline.x
             indexcut = 0
+            let endindexcut = 0
             for (let t = 0; t < animals.length; t++) {
                 for(let k = 0;k<animals[t].nodes.length;k++){
 
-                    let link = new Line(animals[t].nodes[k].center.x, animals[t].nodes[k].center.y, fitnessdot.x, fitnessdot.y, "#00FF00", 1)
+                    // let link = new Line(animals[t].nodes[k].center.x, animals[t].nodes[k].center.y, fitnessdot.x, fitnessdot.y, "#00FF00", 1)
                     if (fitnesscutoff < animals[t].nodes[k].center.x) {
                         fitnesscutoff = animals[t].nodes[k].center.x
                         // link.draw()
-                        ////console.log(indexcut)
                         indexcut = t
+                        //console.log(indexcut)
+                        endindexcut = k
                     }
 
                 }
             }
+
+            if(fitnessline.x > animals[indexcut].nodes[endindexcut].center.x){
+                fitnessline.color = "green"
+            }
+            fitnessline.x = animals[indexcut].nodes[endindexcut].center.x
             refresh()
             counter = 0
-            // //////console.log(animals[indexcut].cycles)
+            // ////////console.log(animals[indexcut].cycles)
         }
         // if(counter > gen + 3){
 
@@ -841,30 +806,30 @@ window.addEventListener('DOMContentLoaded', (event) => {
         if (counter % 10 == 0) {
             if (keysPressed['l']) {
                 chopper--
-                //////console.log(chopper)
+                ////////console.log(chopper)
             }
             if (keysPressed['v']) {
                 chopper = 1
-                //////console.log(chopper)
+                ////////console.log(chopper)
             }
             if (keysPressed['c']) {
                 chopper = 50
-                //////console.log(chopper)
+                ////////console.log(chopper)
             }
             if (keysPressed['k']) {
                 chopper++
-                //////console.log(chopper)
+                ////////console.log(chopper)
             }
             if (keysPressed['f']) {
                 gen--
-                //////console.log(gen)
+                ////////console.log(gen)
             }
             if (keysPressed['g']) {
                 gen++
-                //////console.log(gen)
+                ////////console.log(gen)
             }
             if (keysPressed['q']) {
-                //////console.log(animals)
+                ////////console.log(animals)
             }
         }
 
@@ -876,28 +841,56 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
         for (let t = 0; t < chopper; t++) {
             let animal = new Animal(150, 350, 0)
+
+            // //console.log(animal)
             for(let k = 0;k<animals[indexcut].nodes.length;k++){
 
+
+
+
+                animal.nodes[k].cycles = []
                 animal.nodes[k].cycles = [...animals[indexcut].nodes[k].cycles]
+                animal.nodes[k].mcycles = []
                 animal.nodes[k].mcycles = [...animals[indexcut].nodes[k].mcycles]
                 animal.nodes[k].cyclemax = animals[indexcut].nodes[k].cyclemax
     
-                // for(let k = 0;k<animal.cycles.length;k++){
-                //     if(animal.cycles[k]!=animals[indexcut].cycles[k]){
-                //         //////console.log("error inheriting")
-                //     }
-                // }
+                for(let h = 0;h<animals[indexcut].nodes.length;h++){
+                    for(let g = 0;g<animals[indexcut].nodes[h].mcycles.length;g++){
+
+                        animal.nodes[h].mcycles[g] = animals[indexcut].nodes[h].mcycles[g]
+                        if(animal.nodes[h].mcycles[g]!=animals[indexcut].nodes[h].mcycles[g]){
+                            // //console.log("error inheriting: m")
+                            // //console.log(animal.nodes[h].mcycles[g],animals[indexcut].nodes[h].mcycles[g])
+                        }
+                    }
+                }
     
+                for(let h = 0;h<animals[indexcut].nodes.length;h++){
+                    for(let g = 0;g<animals[indexcut].nodes[h].cycles.length;g++){
+                        animal.nodes[h].cycles[g] = animals[indexcut].nodes[h].cycles[g]
+                        if(animal.nodes[h].cycles[g]!=animals[indexcut].nodes[h].cycles[g]){
+                            // //console.log("error inheriting: c")
+                            // //console.log(animal.nodes[h].cycles.length.length,animals[indexcut].nodes[h].cycles.length)
+                        }
+                    }
+                }
+
+                if(animal.nodes[k].cycles.length != animals[indexcut].nodes[k].cycles.length){
+
+                    console.log(animal.nodes[k].cycles.length,animals[indexcut].nodes[k].cycles.length)
+                }
+            
                 for (let g = 0; g < animals[indexcut].nodes[k].joints.length; g++) {
-                    animal.nodes[k].joints[k].dis = animals[indexcut].nodes[k].joints[k].dis
+                    animal.nodes[k].joints[g].dis = animals[indexcut].nodes[k].joints[g].dis
                 }
     
-                for (let g = 0; g < animals[indexcut].muscles.length; g++) {
-                    animal.nodes[k].muscles[g].speed = animals[indexcut].nodes[k].muscles[g].speed
-                }
-                animal.nodes[k].r = Math.round(animals[indexcut].r + ((Math.random() - .5) * 80))
-                animal.nodes[k].g = Math.round(animals[indexcut].g + ((Math.random() - .5) * 80))
-                animal.nodes[k].b = Math.round(animals[indexcut].b + ((Math.random() - .5) * 80))
+                // console.log(animal.nodes, animals[indexcut].nodes)
+                // for (let g = 0; g < animals[indexcut].muscles.length; g++) {
+                //     animal.nodes[k].muscles[g].speed = animals[indexcut].nodes[k].muscles[g].speed
+                // }
+                animal.nodes[k].r = Math.round(animals[indexcut].nodes[k].r + ((Math.random() - .5) * 80))
+                animal.nodes[k].g = Math.round(animals[indexcut].nodes[k].g + ((Math.random() - .5) * 80))
+                animal.nodes[k].b = Math.round(animals[indexcut].nodes[k].b + ((Math.random() - .5) * 80))
     
                 if (animal.nodes[k].r < 0) {
                     animal.nodes[k].r = 0
@@ -920,25 +913,26 @@ window.addEventListener('DOMContentLoaded', (event) => {
                     animal.nodes[k].b = 255
                 }
                 animal.nodes[k].color = `rgba(${animal.nodes[k].r},${animal.nodes[k].g},${animal.nodes[k].b},1)`
-                if (t > 0) {
-                    animal.nodes[k].mutate()
-                }
+                
     
-                // for(let k = 0;k<animal.cycles.length;k++){
-                //     if(animal.cycles[k]!=animals[indexcut].cycles[k]){
-                //         //////console.log("natural mutation")
-                //     }
-                // }
 
             }
             animb.push(animal)
 
         }
 
-        animals = []
-        animals = [...animb]
+        animals = []// [animals[indexcut]]
+        for(let y = 0;y<animb.length;y++){
+            animals.push(animb[y])
+        }
+        for(let t = 0;t<animals.length;t++){
+            if(t > 2){
+                animals[t].mutate()
+            }
+        }
+    
+
+        counter = 0
     }
-
-
 
 })
