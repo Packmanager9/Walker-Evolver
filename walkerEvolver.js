@@ -1,7 +1,7 @@
 
 window.addEventListener('DOMContentLoaded', (event) => {
 
-    let gen = 60//300
+    let gen = 15//300
 
 
     let keysPressed = {}
@@ -264,11 +264,11 @@ window.addEventListener('DOMContentLoaded', (event) => {
             this.link = new Line(this.body.x, this.body.y, this.anchor.x, this.anchor.y, "red", 2)
             this.length = this.link.hypotenuse()
             this.state = 1
-            this.min = this.length * .5
+            this.min = (this.limbs[0].dis + this.limbs[1].dis) * .2
             this.max = (this.limbs[0].dis + this.limbs[1].dis) * .49
-            //console.log(this.max)
+            ////console.log(this.max)
             this.counter = 0
-            this.speed = Math.random() * .05
+            this.speed = (Math.random() * .05)
         }
         draw() {
             // this.balance()
@@ -451,7 +451,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
                                 // }
 
                             }
-                            // ////console.log(mediholder)
+                            // //////console.log(mediholder)
                             // this.limbs[1].end = new Circle(this.limbs[1].median.x + (Math.cos(this.limbs[1].angle) * this.limbs[1].dis), this.limbs[1].median.y + (Math.sin(this.limbs[1].angle) * this.limbs[1].dis), this.limbs[1].median.radius, this.limbs[1].holdcenter.color)
 
                         } else {
@@ -545,7 +545,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
             this.nodes = []
             this.layer = layer
             this.nodes.push(this)
-            // ////console.log(layer)
+            // //////console.log(layer)
             if(this.layer < 1){
                 let animal = new Animal(x-40,y,layer+1)
                 animal.r = this.r
@@ -556,7 +556,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
                 this.nodes.push(animal)
                 // animals.push(animal)
-                ////console.log("hello")
+                //////console.log("hello")
 
             this.segments = []
             if(this.nodes.length == 2){
@@ -578,10 +578,10 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
 
             let angle = Math.PI*.25
-            let joint1 = new Joint(this, 0+angle, 20)
-            let joint2 = new Joint(this, (Math.PI*.5)+angle, 20)
-            let joint4 = new Joint(this, Math.PI+angle, 20)
-            let joint5 = new Joint(this, (Math.PI*1.5)+angle, 20)
+            let joint1 = new Joint(this, 0+angle, 27)
+            let joint2 = new Joint(this, (Math.PI*.5)+angle, 27)
+            let joint4 = new Joint(this, Math.PI+angle, 27)
+            let joint5 = new Joint(this, (Math.PI*1.5)+angle, 27)
             let center = new Muscle(joint1, joint2, this)
             // let center2 = new Muscle(joint3, joint1)
             // let center3 = new Muscle(joint2, joint4, this)
@@ -657,15 +657,15 @@ window.addEventListener('DOMContentLoaded', (event) => {
             for (let t = 0; t < this.cyclemax*5; t++) {
                 this.cycles.push([Math.floor(Math.random() * this.joints.length), Math.floor(Math.random() * 2), Math.floor(Math.random() * this.cyclemax)])
                 if (Math.random() < .85) {
-                    this.mcycles.push([Math.floor(Math.random() * this.muscles.length), 0, Math.floor(Math.random() * this.cyclemax)])
+                    this.mcycles.push([Math.floor(Math.random() * this.muscles.length), 0, Math.floor(Math.random() * this.cyclemax),  (Math.random() * .15)])
                 } else if (Math.random() < .5) {
-                    this.mcycles.push([Math.floor(Math.random() * this.muscles.length), 1, Math.floor(Math.random() * this.cyclemax)])
+                    this.mcycles.push([Math.floor(Math.random() * this.muscles.length), 1, Math.floor(Math.random() * this.cyclemax),  (Math.random() * .15)])
                 } else {
-                    this.mcycles.push([Math.floor(Math.random() * this.muscles.length), -1, Math.floor(Math.random() * this.cyclemax)])
+                    this.mcycles.push([Math.floor(Math.random() * this.muscles.length), -1, Math.floor(Math.random() * this.cyclemax),  (Math.random() * .15)])
                 }
 
             }
-            // ////console.log(this)
+            // //////console.log(this)
         }
         draw() {
             this.counter++
@@ -674,11 +674,15 @@ window.addEventListener('DOMContentLoaded', (event) => {
             if(this.layer == 0){
 
                 for(let s = 0;s<this.nodes.length;s++){
+                    for(let s = 0;s<this.segments.length;s++){
+                        this.nodes[s].segments[s].balance()
+                    }
                     for (let t = 0; t < this.nodes[s].muscles.length; t++) {
                         for (let k = 0; k < this.nodes[s].mcycles.length; k++) {
                             if (this.nodes[s].mcycles[k][0] == t) {
                                 if (this.nodes[s].mcycles[k][2] == this.counter) {
                                     this.nodes[s].muscles[t].state = this.nodes[s].mcycles[k][1]
+                                    this.nodes[s].muscles[t].speed = this.nodes[s].mcycles[k][3]
                                 }
                             }
                         }
@@ -689,20 +693,17 @@ window.addEventListener('DOMContentLoaded', (event) => {
                             if (this.nodes[s].cycles[k][0] == t) {
                                 if (this.nodes[s].cycles[k][2] == this.counter) {
                                     this.nodes[s].joints[t].rooted = this.nodes[s].cycles[k][1]
-                                    // console.log(this.nodes[s].layer)
+                                    // //console.log(this.nodes[s].layer)
                                 }
                             }
                         }
-                        console.log(this.nodes[s].joints[t], this.nodes[s])
+                        //console.log(this.nodes[s].joints[t], this.nodes[s])
                         this.nodes[s].joints[t].move()
                     }
                     // this.center.draw()
         
                     }
 
-                    for(let s = 0;s<this.segments.length;s++){
-                        this.segments[s].balance()
-                    }
                 for(let s = 0;s<this.nodes.length;s++){
                     for (let t = 0; t < this.nodes[s].joints.length; t++) {
                         this.nodes[s].joints[t].draw()
@@ -722,29 +723,29 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 }
             }
             for (let t = 0; t < this.mcycles.length; t++) {
-                if (Math.random() < .06) {
-                    this.mcycles[t] = [Math.floor(Math.random() * this.muscles.length), -1, Math.floor(Math.random() * this.cyclemax)]
+                if (Math.random() < .01) {
+                    this.mcycles[t] = [Math.floor(Math.random() * this.muscles.length), -1, Math.floor(Math.random() * this.cyclemax), (.15*Math.random())]
                 }
-                if (Math.random() < .06) {
-                    this.mcycles[t] = [Math.floor(Math.random() * this.muscles.length), 1, Math.floor(Math.random() * this.cyclemax)]
+                if (Math.random() < .01) {
+                    this.mcycles[t] = [Math.floor(Math.random() * this.muscles.length), 1, Math.floor(Math.random() * this.cyclemax), (.15*Math.random())]
                 }
-                if (Math.random() < .06) {
-                    this.mcycles[t] = [Math.floor(Math.random() * this.muscles.length), 0, Math.floor(Math.random() * this.cyclemax)]
+                if (Math.random() < .01) {
+                    this.mcycles[t] = [Math.floor(Math.random() * this.muscles.length), 0, Math.floor(Math.random() * this.cyclemax), (.15*Math.random())]
                 }
             }
-            for (let t = 0; t < this.muscles.length; t++) {
-                if (Math.random() < .05) {
-                    this.muscles[t].speed += .01
+            for (let t = 0; t < this.mcycles.length; t++) {
+                if (Math.random() < .01) {
+                    this.mcycles[t][3] += .02*Math.random()
                 }
-                if (Math.random() < .05) {
-                    this.muscles[t].speed -= .01
+                if (Math.random() < .01) {
+                    this.mcycles[t][3] -= .02*Math.random()
                 }
             }
             for (let t = 0; t < this.joints.length; t++) {
-                if (Math.random() < .05) {
+                if (Math.random() < .01) {
                     this.joints[t].dis += (Math.random() * .5)
                 }
-                if (Math.random() < .05) {
+                if (Math.random() < .01) {
                     this.joints[t].dis -= (Math.random() * .5)
                 }
             }
@@ -759,20 +760,20 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 }
             }
 
-            if (Math.random() < .15) {
+            if (Math.random() < .05) {
                 this.cycles.push([Math.floor(Math.random() * this.joints.length), Math.floor(Math.random() * 2), Math.floor(Math.random() * this.cyclemax)])
             }
 
-            if (Math.random() < .056) {
-                this.mcycles.push([Math.floor(Math.random() * this.muscles.length), 1, Math.floor(Math.random() * this.cyclemax)])
+            if (Math.random() < .016) {
+                this.mcycles.push([Math.floor(Math.random() * this.muscles.length), 1, Math.floor(Math.random() * this.cyclemax),  (Math.random() * .15)])
             }
 
-            if (Math.random() < .056) {
-                this.mcycles.push([Math.floor(Math.random() * this.muscles.length), 0, Math.floor(Math.random() * this.cyclemax)])
+            if (Math.random() < .016) {
+                this.mcycles.push([Math.floor(Math.random() * this.muscles.length), 0, Math.floor(Math.random() * this.cyclemax), (Math.random() * .15)])
             }
 
-            if (Math.random() < .056) {
-                this.mcycles.push([Math.floor(Math.random() * this.muscles.length), -1, Math.floor(Math.random() * this.cyclemax)])
+            if (Math.random() < .016) {
+                this.mcycles.push([Math.floor(Math.random() * this.muscles.length), -1, Math.floor(Math.random() * this.cyclemax),  (Math.random() * .15)])
             }
         }
 
@@ -819,7 +820,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
                     if (fitnesscutoff < animals[t].nodes[k].center.x) {
                         fitnesscutoff = animals[t].nodes[k].center.x
                         // link.draw()
-                        //console.log(indexcut)
+                        ////console.log(indexcut)
                         indexcut = t
                     }
 
@@ -827,7 +828,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
             }
             refresh()
             counter = 0
-            // ////console.log(animals[indexcut].cycles)
+            // //////console.log(animals[indexcut].cycles)
         }
         // if(counter > gen + 3){
 
@@ -835,30 +836,30 @@ window.addEventListener('DOMContentLoaded', (event) => {
         if (counter % 10 == 0) {
             if (keysPressed['l']) {
                 chopper--
-                ////console.log(chopper)
+                //////console.log(chopper)
             }
             if (keysPressed['v']) {
                 chopper = 1
-                ////console.log(chopper)
+                //////console.log(chopper)
             }
             if (keysPressed['c']) {
                 chopper = 50
-                ////console.log(chopper)
+                //////console.log(chopper)
             }
             if (keysPressed['k']) {
                 chopper++
-                ////console.log(chopper)
+                //////console.log(chopper)
             }
             if (keysPressed['f']) {
                 gen--
-                ////console.log(gen)
+                //////console.log(gen)
             }
             if (keysPressed['g']) {
                 gen++
-                ////console.log(gen)
+                //////console.log(gen)
             }
             if (keysPressed['q']) {
-                ////console.log(animals)
+                //////console.log(animals)
             }
         }
 
@@ -878,7 +879,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
     
                 // for(let k = 0;k<animal.cycles.length;k++){
                 //     if(animal.cycles[k]!=animals[indexcut].cycles[k]){
-                //         ////console.log("error inheriting")
+                //         //////console.log("error inheriting")
                 //     }
                 // }
     
@@ -920,7 +921,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
     
                 // for(let k = 0;k<animal.cycles.length;k++){
                 //     if(animal.cycles[k]!=animals[indexcut].cycles[k]){
-                //         ////console.log("natural mutation")
+                //         //////console.log("natural mutation")
                 //     }
                 // }
 
